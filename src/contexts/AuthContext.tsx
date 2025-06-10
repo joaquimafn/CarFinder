@@ -1,15 +1,17 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { signIn as apiSignIn, SignInResponse } from '../services/api';
 
 interface User {
   id: string;
-  email: string;
+  name: string;
+  token: string;
 }
 
 interface AuthContextData {
   user: User | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (user: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -25,8 +27,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   async function loadStoredData() {
     try {
-      const storedUser = await AsyncStorage.getItem('@AuthData:user');
-      if (storedUser) {
+      const [storedUser, storedToken] = await Promise.all([
+        AsyncStorage.getItem('@AuthData:user'),
+        AsyncStorage.getItem('@AuthData:token'),
+      ]);
+
+      if (storedUser && storedToken) {
         setUser(JSON.parse(storedUser));
       }
     } catch (error) {
@@ -36,25 +42,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (user: string, password: string) => {
     try {
-      // Here you would typically make an API call to your backend
-      // This is just a mock implementation
-      const mockUser = {
-        id: '1',
-        email: email,
-      };
+      const response = await apiSignIn({ user, password });
+      
+      const { user: userData } = response;
 
-      await AsyncStorage.setItem('@AuthData:user', JSON.stringify(mockUser));
-      setUser(mockUser);
+      await Promise.all([
+        AsyncStorage.setItem('@AuthData:user', JSON.stringify(userData)),
+        AsyncStorage.setItem('@AuthData:token', userData.token),
+      ]);
+
+      setUser(userData);
     } catch (error) {
-      throw new Error('Authentication failed');
+      throw error;
     }
   };
 
   const signOut = async () => {
     try {
-      await AsyncStorage.removeItem('@AuthData:user');
+      await Promise.all([
+        AsyncStorage.removeItem('@AuthData:user'),
+        AsyncStorage.removeItem('@AuthData:token'),
+      ]);
       setUser(null);
     } catch (error) {
       throw new Error('Error signing out');

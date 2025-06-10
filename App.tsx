@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
 import { SignIn } from './src/screens/SignIn';
+import { Home } from './src/screens/Home';
 
 const Stack = createStackNavigator();
 
@@ -23,8 +24,14 @@ function Navigation() {
           options={{ headerShown: false }}
         />
       ) : (
-        // Add authenticated screens here
-        <Stack.Screen name="Home" component={() => null} />
+        <Stack.Screen 
+          name="Home" 
+          component={Home}
+          options={{ 
+            title: 'Home',
+            headerShown: true,
+          }}
+        />
       )}
     </Stack.Navigator>
   );
