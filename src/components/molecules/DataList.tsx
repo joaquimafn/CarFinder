@@ -1,15 +1,16 @@
 import React from 'react';
-import { FlatList, FlatListProps, ActivityIndicator, View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, VirtualizedList } from 'react-native';
 import { Text } from '../atoms/Text';
 import { Button } from '../atoms/Button';
 
-interface DataListProps<T> extends Omit<FlatListProps<T>, 'renderItem'> {
+interface DataListProps<T> {
   data: T[];
   renderItem: (item: T) => React.ReactElement;
   isLoading?: boolean;
   error?: string | null;
   onRetry?: () => void;
   onRefresh?: () => void;
+  estimatedItemSize?: number;
 }
 
 export function DataList<T>({
@@ -19,17 +20,17 @@ export function DataList<T>({
   error,
   onRetry,
   onRefresh,
-  ...flatListProps
+  estimatedItemSize = 100,
 }: DataListProps<T>) {
-  if (isLoading) {
+  if (isLoading && !data.length) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
 
-  if (error) {
+  if (error && !data.length) {
     return (
       <View style={styles.container}>
         <Text variant="body" style={styles.errorText}>{error}</Text>
@@ -37,7 +38,7 @@ export function DataList<T>({
           <Button
             title="Retry"
             onPress={onRetry}
-            variant="primary"
+            variant="secondary"
             style={styles.retryButton}
           />
         )}
@@ -45,15 +46,29 @@ export function DataList<T>({
     );
   }
 
+  const getItem = (data: T[], index: number) => data[index];
+  const getItemCount = (data: T[]) => data.length;
+  const getItemLayout = (_: any, index: number) => ({
+    length: estimatedItemSize,
+    offset: estimatedItemSize * index,
+    index,
+  });
+
   return (
-    <FlatList
+    <VirtualizedList
       data={data}
+      getItem={getItem}
+      getItemCount={getItemCount}
+      getItemLayout={getItemLayout}
       renderItem={({ item }) => renderItem(item)}
-      keyExtractor={(item, index) => index.toString()}
+      keyExtractor={(_, index) => index.toString()}
       refreshing={isLoading}
       onRefresh={onRefresh}
       contentContainerStyle={styles.listContainer}
-      {...flatListProps}
+      initialNumToRender={10}
+      maxToRenderPerBatch={10}
+      windowSize={5}
+      removeClippedSubviews={true}
     />
   );
 }
@@ -69,7 +84,6 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   errorText: {
-    color: '#FF3B30',
     marginBottom: 16,
     textAlign: 'center',
   },
