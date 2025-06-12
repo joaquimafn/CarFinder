@@ -6,12 +6,14 @@ interface BrandFilterProps {
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
+  debounceTime?: number;
 }
 
 export function BrandFilter({
   value,
   onChangeText,
   placeholder = 'Search by brand name...',
+  debounceTime = 500,
 }: BrandFilterProps) {
   return (
     <View style={styles.container}>
@@ -20,6 +22,7 @@ export function BrandFilter({
         onChangeText={onChangeText}
         placeholder={placeholder}
         testID="brand-search-input"
+        debounceTime={debounceTime}
       />
     </View>
   );

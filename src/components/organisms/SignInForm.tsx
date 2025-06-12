@@ -67,7 +67,7 @@ export function SignInForm({ onSubmit, isLoading, error }: SignInFormProps) {
       <Button
         title="Sign In"
         onPress={handleSubmit(onSubmit)}
-        isLoading={isLoading}
+        loading={isLoading}
         disabled={isLoading}
         style={styles.button}
       />
