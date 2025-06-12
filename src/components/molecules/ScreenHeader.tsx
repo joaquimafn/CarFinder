@@ -1,6 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Button } from '../atoms/Button';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text } from '../atoms/Text';
+import { Feather } from '@expo/vector-icons';
+import { colors, spacing, shadows } from '../../utils/theme';
+import { useNavigation } from '@react-navigation/native';
 
 interface ScreenHeaderProps {
   title: string;
@@ -13,19 +16,19 @@ export function ScreenHeader({
   title,
   showLogout,
   onLogout,
-  testID
+  testID,
 }: ScreenHeaderProps) {
   return (
     <View style={styles.container} testID={testID}>
       <View style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
         {showLogout && onLogout && (
-          <Button
-            title="Sair"
-            onPress={onLogout}
-            variant="outline"
+          <TouchableOpacity 
+            onPress={onLogout} 
+            style={styles.logoutButton}
             testID="logout-button"
-          />
+          >
+            <Feather name="log-out" size={22} color={colors.danger} />
+          </TouchableOpacity>
         )}
       </View>
     </View>
@@ -34,10 +37,11 @@ export function ScreenHeader({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: spacing.md,
+    backgroundColor: colors.background,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: colors.border,
+    ...shadows.small,
   },
   content: {
     flexDirection: 'row',
@@ -45,8 +49,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    flex: 1,
+    textAlign: 'center',
+    color: colors.text,
+  },
+  backButton: {
+    padding: spacing.xs,
+  },
+  logoutButton: {
+    padding: spacing.xs,
   },
 }); 

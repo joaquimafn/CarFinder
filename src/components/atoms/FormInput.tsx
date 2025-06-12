@@ -1,47 +1,91 @@
 import React from 'react';
 import { TextInput, TextInputProps, StyleSheet, View } from 'react-native';
 import { Text } from './Text';
+import { colors, spacing, borderRadius, shadows } from '../../utils/theme';
 
 interface FormInputProps extends TextInputProps {
   label?: string;
   error?: string;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
-export function FormInput({ label, error, style, ...props }: FormInputProps) {
+export function FormInput({ 
+  label, 
+  error, 
+  style, 
+  leftIcon,
+  rightIcon,
+  ...props 
+}: FormInputProps) {
   return (
     <View style={styles.container}>
       {label && <Text variant="caption" style={styles.label}>{label}</Text>}
-      <TextInput
-        style={[styles.input, error && styles.inputError, style]}
-        placeholderTextColor="#999"
-        {...props}
-      />
-      {error && <Text variant="caption" style={styles.errorText}>{error}</Text>}
+      <View style={styles.inputContainer}>
+        {leftIcon && <View style={styles.leftIconContainer}>{leftIcon}</View>}
+        <TextInput
+          style={[
+            styles.input, 
+            leftIcon ? styles.inputWithLeftIcon : null,
+            rightIcon ? styles.inputWithRightIcon : null,
+            error && styles.inputError, 
+            style
+          ]}
+          placeholderTextColor={colors.textSecondary}
+          {...props}
+        />
+        {rightIcon && <View style={styles.rightIconContainer}>{rightIcon}</View>}
+      </View>
+      {error && <Text variant="caption" color={colors.danger} style={styles.errorText}>{error}</Text>}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: spacing.lg,
   },
   label: {
-    marginBottom: 8,
-    color: '#333',
+    marginBottom: spacing.xs,
+    color: colors.textSecondary,
+  },
+  inputContainer: {
+    position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
+    flex: 1,
     height: 50,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    backgroundColor: '#fff',
+    borderColor: colors.border,
+    borderRadius: borderRadius.md,
+    paddingHorizontal: spacing.md,
+    backgroundColor: colors.background,
+    color: colors.text,
+    fontSize: 16,
+    ...shadows.small,
+  },
+  inputWithLeftIcon: {
+    paddingLeft: spacing.xl + spacing.xs,
+  },
+  inputWithRightIcon: {
+    paddingRight: spacing.xl + spacing.xs,
   },
   inputError: {
-    borderColor: '#FF3B30',
+    borderColor: colors.danger,
   },
   errorText: {
-    color: '#FF3B30',
-    marginTop: 4,
+    marginTop: spacing.xs,
+  },
+  leftIconContainer: {
+    position: 'absolute',
+    left: spacing.md,
+    zIndex: 1,
+  },
+  rightIconContainer: {
+    position: 'absolute',
+    right: spacing.md,
+    zIndex: 1,
   },
 }); 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { SearchInput } from '../atoms/SearchInput';
+import { spacing } from '../../utils/theme';
 
 interface BrandFilterProps {
   value: string;
@@ -12,8 +13,8 @@ interface BrandFilterProps {
 export function BrandFilter({
   value,
   onChangeText,
-  placeholder = 'Search by brand name...',
-  debounceTime = 500,
+  placeholder = 'Search brands...',
+  debounceTime = 300,
 }: BrandFilterProps) {
   return (
     <View style={styles.container}>
@@ -31,6 +32,6 @@ export function BrandFilter({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingVertical: 8,
+    paddingVertical: spacing.sm,
   },
 }); 

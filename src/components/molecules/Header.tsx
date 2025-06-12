@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text } from '../atoms/Text';
 import { Button } from '../atoms/Button';
+import { colors, spacing, shadows } from '../../utils/theme';
+import { Feather } from '@expo/vector-icons';
 
 interface HeaderProps {
   title: string;
@@ -11,13 +13,20 @@ interface HeaderProps {
 export function Header({ title, onLogout }: HeaderProps) {
   return (
     <View style={styles.container}>
-      <Text variant="subtitle" style={styles.title}>{title}</Text>
-      <Button
-        title="Logout"
-        onPress={onLogout}
-        variant="danger"
-        style={styles.logoutButton}
-      />
+      <View style={styles.leftSection}>
+        <Feather name="home" size={24} color={colors.text} />
+        <Text variant="subtitle" style={styles.title}>{title}</Text>
+      </View>
+      
+      <View style={styles.rightSection}>
+        <TouchableOpacity style={styles.iconButton}>
+          <Feather name="bell" size={22} color={colors.text} />
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.iconButton} onPress={onLogout}>
+          <Feather name="log-out" size={22} color={colors.danger} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -27,17 +36,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#f8f8f8',
+    padding: spacing.md,
+    backgroundColor: colors.background,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: colors.border,
+    ...shadows.small,
+  },
+  leftSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rightSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   title: {
-    flex: 1,
-    marginRight: 16,
+    marginLeft: spacing.md,
   },
-  logoutButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+  iconButton: {
+    padding: spacing.xs,
+    marginLeft: spacing.md,
   },
 }); 

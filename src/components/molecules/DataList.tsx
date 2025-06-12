@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator, VirtualizedList } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, VirtualizedList, StyleProp, ViewStyle } from 'react-native';
 import { Text } from '../atoms/Text';
 import { Button } from '../atoms/Button';
+import { colors, spacing } from '../../utils/theme';
 
 interface DataListProps<T> {
   data: T[];
@@ -12,6 +13,8 @@ interface DataListProps<T> {
   onRefresh?: () => void;
   estimatedItemSize?: number;
   ListHeaderComponent?: React.ComponentType<any> | React.ReactElement | null;
+  ListEmptyComponent?: React.ComponentType<any> | React.ReactElement | null;
+  contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
 export function DataList<T>({
@@ -23,11 +26,13 @@ export function DataList<T>({
   onRefresh,
   estimatedItemSize = 100,
   ListHeaderComponent,
+  ListEmptyComponent,
+  contentContainerStyle,
 }: DataListProps<T>) {
   if (isLoading && !data.length) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={colors.accent} />
       </View>
     );
   }
@@ -56,6 +61,13 @@ export function DataList<T>({
     index,
   });
 
+  const EmptyComponent = () => {
+    if (data.length === 0 && !isLoading && !error && ListEmptyComponent) {
+      return ListEmptyComponent;
+    }
+    return null;
+  };
+
   return (
     <VirtualizedList
       data={data}
@@ -66,12 +78,13 @@ export function DataList<T>({
       keyExtractor={(_, index) => index.toString()}
       refreshing={isLoading}
       onRefresh={onRefresh}
-      contentContainerStyle={styles.listContainer}
+      contentContainerStyle={[styles.listContainer, contentContainerStyle]}
       initialNumToRender={10}
       maxToRenderPerBatch={10}
       windowSize={5}
       removeClippedSubviews={true}
       ListHeaderComponent={ListHeaderComponent}
+      ListEmptyComponent={EmptyComponent()}
     />
   );
 }
@@ -81,14 +94,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: spacing.xl,
+    backgroundColor: colors.background,
   },
   listContainer: {
-    padding: 16,
+    padding: spacing.md,
   },
   errorText: {
-    marginBottom: 16,
+    marginBottom: spacing.md,
     textAlign: 'center',
+    color: colors.danger,
   },
   retryButton: {
     minWidth: 120,

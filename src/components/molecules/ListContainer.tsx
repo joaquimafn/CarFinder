@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, FlatList, ActivityIndicator, Text, StyleSheet } from 'react-native';
+import { View, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import { Text } from '../atoms/Text';
 import { Button } from '../atoms/Button';
+import { colors, spacing } from '../../utils/theme';
 
 interface ListContainerProps<T> {
   data: T[];
@@ -11,6 +13,8 @@ interface ListContainerProps<T> {
   renderItem: ({ item }: { item: T }) => React.ReactElement;
   keyExtractor: (item: T) => string;
   testID?: string;
+  ListHeaderComponent?: React.ReactElement | null;
+  ListEmptyComponent?: React.ReactElement | null;
 }
 
 export function ListContainer<T>({
@@ -21,31 +25,49 @@ export function ListContainer<T>({
   onRetry,
   renderItem,
   keyExtractor,
-  testID
+  testID,
+  ListHeaderComponent,
+  ListEmptyComponent
 }: ListContainerProps<T>) {
-  if (loading) {
+  if (loading && data.length === 0) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={colors.accent} />
       </View>
     );
   }
 
-  if (error) {
+  if (error && data.length === 0) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{error}</Text>
+        <Text variant="body" style={styles.errorText}>{error}</Text>
         {onRetry && (
           <Button
             title="Tentar novamente"
             onPress={onRetry}
-            variant="outline"
+            variant="primary"
             testID="retry-button"
           />
         )}
       </View>
     );
   }
+
+  const EmptyComponent = () => {
+    if (data.length === 0 && !loading && !error && ListEmptyComponent) {
+      return ListEmptyComponent;
+    }
+    
+    if (data.length === 0 && !loading && !error) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text variant="subtitle" style={styles.emptyText}>Nenhum item encontrado</Text>
+        </View>
+      );
+    }
+    
+    return null;
+  };
 
   return (
     <View style={styles.container} testID={testID}>
@@ -55,6 +77,10 @@ export function ListContainer<T>({
         keyExtractor={keyExtractor}
         onRefresh={onRefresh}
         refreshing={loading}
+        contentContainerStyle={styles.listContent}
+        ListHeaderComponent={ListHeaderComponent}
+        ListEmptyComponent={<EmptyComponent />}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -63,22 +89,37 @@ export function ListContainer<T>({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: colors.background,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    padding: spacing.xl,
+    backgroundColor: colors.background,
   },
   errorText: {
-    color: '#ff0000',
+    color: colors.danger,
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: spacing.lg,
+  },
+  emptyContainer: {
+    padding: spacing.xl,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: colors.textSecondary,
+  },
+  listContent: {
+    flexGrow: 1,
+    paddingVertical: spacing.md,
   },
 }); 

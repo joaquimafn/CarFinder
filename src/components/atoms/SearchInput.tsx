@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { colors, borderRadius, spacing, shadows } from '../../utils/theme';
 
 interface SearchInputProps {
   value: string;
@@ -18,6 +19,7 @@ export function SearchInput({
   debounceTime = 500 // Default debounce time of 500ms
 }: SearchInputProps) {
   const [inputValue, setInputValue] = useState(value);
+  const [isFocused, setIsFocused] = useState(false);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Update the internal value when the external value changes
@@ -59,19 +61,34 @@ export function SearchInput({
     onChangeText(inputValue);
   };
 
+  const handleClearText = () => {
+    setInputValue('');
+    onChangeText('');
+  };
+
   return (
-    <View style={styles.container}>
-      <Ionicons name="search" size={20} color="#666" style={styles.icon} />
+    <View style={[
+      styles.container, 
+      isFocused && styles.containerFocused
+    ]}>
+      <Feather name="search" size={20} color={colors.textSecondary} style={styles.icon} />
       <TextInput
         style={styles.input}
         value={inputValue}
         onChangeText={handleChangeText}
         placeholder={placeholder}
+        placeholderTextColor={colors.textSecondary}
         testID={testID}
-        clearButtonMode="while-editing"
         returnKeyType="search"
         onSubmitEditing={handleSubmitEditing}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
       />
+      {inputValue.length > 0 && (
+        <TouchableOpacity onPress={handleClearText} style={styles.clearButton}>
+          <Feather name="x" size={18} color={colors.textSecondary} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -80,18 +97,28 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    paddingHorizontal: 12,
+    backgroundColor: colors.card,
+    borderRadius: borderRadius.md,
+    paddingHorizontal: spacing.md,
     height: 48,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadows.small,
+  },
+  containerFocused: {
+    borderColor: colors.accent,
+    backgroundColor: colors.background,
   },
   icon: {
-    marginRight: 8,
+    marginRight: spacing.sm,
   },
   input: {
     flex: 1,
     fontSize: 16,
+    color: colors.text,
+    height: '100%',
+  },
+  clearButton: {
+    padding: spacing.xs,
   },
 }); 

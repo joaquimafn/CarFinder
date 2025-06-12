@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet, StatusBar, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { SignInForm } from '../components/organisms/SignInForm';
+import { colors } from '../utils/theme';
 
 interface SignInFormData {
   user: string;
@@ -26,12 +27,33 @@ export function SignIn() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <SignInForm
-        onSubmit={handleSubmit}
-        isLoading={isLoading}
-        error={error}
-      />
-    </View>
+    <KeyboardAvoidingView 
+      style={styles.container} 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
+      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <SignInForm
+          onSubmit={handleSubmit}
+          isLoading={isLoading}
+          error={error}
+        />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 } 
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+}); 
