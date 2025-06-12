@@ -17,12 +17,9 @@ A mobile application built with React Native and Expo that allows users to brows
 ## Screenshots
 
 *(Screenshots to be added)*
-![image](https://github.com/user-attachments/assets/a8a63515-6cb8-46e5-b5b7-7f77fd719230)
-![image](https://github.com/user-attachments/assets/f8a55fda-1a08-498b-ab27-3b90b94f840f)
-![image](https://github.com/user-attachments/assets/e47a17c0-4606-4cda-aa29-8ef8cc960ef5)
-![image](https://github.com/user-attachments/assets/ebd7a869-6e7e-45eb-b3f3-46651bfee9b2)
-![image](https://github.com/user-attachments/assets/e573c40f-a3c3-4cc5-bb83-a43452159966)
-![image](https://github.com/user-attachments/assets/be9ff0d9-7b35-4d84-8491-1eb5c21213f6)
+|![image](https://github.com/user-attachments/assets/a8a63515-6cb8-46e5-b5b7-7f77fd719230)|![image](https://github.com/user-attachments/assets/f8a55fda-1a08-498b-ab27-3b90b94f840f)
+|![image](https://github.com/user-attachments/assets/e47a17c0-4606-4cda-aa29-8ef8cc960ef5)|![image](https://github.com/user-attachments/assets/ebd7a869-6e7e-45eb-b3f3-46651bfee9b2)
+|![image](https://github.com/user-attachments/assets/e573c40f-a3c3-4cc5-bb83-a43452159966)|![image](https://github.com/user-attachments/assets/be9ff0d9-7b35-4d84-8491-1eb5c21213f6)
 ![image](https://github.com/user-attachments/assets/13081bd4-4c6a-45f8-b295-5277fe2aa000)
 
 
