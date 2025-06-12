@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { CarBrand } from '../../services/api';
 import { DataList } from '../molecules/DataList';
 import { Card } from '../atoms/Card';
+import { BrandFilter } from '../molecules/BrandFilter';
 
 interface BrandListProps {
   brands: CarBrand[];
@@ -20,6 +21,19 @@ export function BrandList({
   onRefresh,
   onBrandPress,
 }: BrandListProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredBrands = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return brands;
+    }
+    
+    const normalizedQuery = searchQuery.toLowerCase().trim();
+    return brands.filter(brand => 
+      brand.name.toLowerCase().includes(normalizedQuery)
+    );
+  }, [brands, searchQuery]);
+
   const renderBrandItem = (brand: CarBrand) => (
     <Card
       title={brand.name}
@@ -28,14 +42,22 @@ export function BrandList({
     />
   );
 
+  const ListHeaderComponent = () => (
+    <BrandFilter
+      value={searchQuery}
+      onChangeText={setSearchQuery}
+    />
+  );
+
   return (
     <DataList
-      data={brands}
+      data={filteredBrands}
       renderItem={renderBrandItem}
       isLoading={isLoading}
       error={error}
       onRetry={onRetry}
       onRefresh={onRefresh}
+      ListHeaderComponent={ListHeaderComponent}
     />
   );
 } 

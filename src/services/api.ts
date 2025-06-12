@@ -4,7 +4,7 @@ const api = axios.create({
   baseURL: 'https://test-api-y04b.onrender.com',
 });
 
-const fipeApi = axios.create({
+export const fipeApi = axios.create({
   baseURL: 'https://parallelum.com.br/fipe/api/v1',
 });
 

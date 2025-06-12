@@ -11,6 +11,7 @@ interface DataListProps<T> {
   onRetry?: () => void;
   onRefresh?: () => void;
   estimatedItemSize?: number;
+  ListHeaderComponent?: React.ComponentType<any> | React.ReactElement | null;
 }
 
 export function DataList<T>({
@@ -21,6 +22,7 @@ export function DataList<T>({
   onRetry,
   onRefresh,
   estimatedItemSize = 100,
+  ListHeaderComponent,
 }: DataListProps<T>) {
   if (isLoading && !data.length) {
     return (
@@ -69,6 +71,7 @@ export function DataList<T>({
       maxToRenderPerBatch={10}
       windowSize={5}
       removeClippedSubviews={true}
+      ListHeaderComponent={ListHeaderComponent}
     />
   );
 }

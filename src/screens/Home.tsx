@@ -4,9 +4,23 @@ import { useAuth } from '../contexts/AuthContext';
 import { getCarBrands, CarBrand } from '../services/api';
 import { Header } from '../components/molecules/Header';
 import { BrandList } from '../components/organisms/BrandList';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = {
+  SignIn: undefined;
+  Home: undefined;
+  Model: {
+    brandCode: number;
+    brandName: string;
+  };
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
 export function Home() {
   const { user, signOut } = useAuth();
+  const navigation = useNavigation<NavigationProp>();
   const [brands, setBrands] = useState<CarBrand[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,8 +44,10 @@ export function Home() {
   }, []);
 
   const handleBrandPress = (brand: CarBrand) => {
-    // Handle brand selection
-    console.log('Selected brand:', brand);
+    navigation.navigate('Model', {
+      brandCode: parseInt(brand.code),
+      brandName: brand.name
+    });
   };
 
   return (

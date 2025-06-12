@@ -1,39 +1,50 @@
 import React from 'react';
-import { TouchableOpacity, ActivityIndicator, StyleSheet, ViewStyle, StyleProp } from 'react-native';
-import { Text } from './Text';
+import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'danger';
-  isLoading?: boolean;
+  variant?: 'primary' | 'secondary' | 'outline' | 'danger';
+  loading?: boolean;
   disabled?: boolean;
+  testID?: string;
   style?: StyleProp<ViewStyle>;
 }
 
-export function Button({
-  title,
-  onPress,
-  variant = 'primary',
-  isLoading,
-  disabled,
+export function Button({ 
+  title, 
+  onPress, 
+  variant = 'primary', 
+  loading = false, 
+  disabled = false,
+  testID,
   style,
 }: ButtonProps) {
+  const buttonStyle = [
+    styles.button,
+    styles[variant],
+    disabled && styles.disabled
+  ];
+
+  const textStyle = [
+    styles.text,
+    variant === 'outline' && styles.outlineText,
+    disabled && styles.disabledText
+  ];
+
   return (
     <TouchableOpacity
-      style={[
-        styles.button,
-        styles[variant],
-        disabled && styles.disabled,
-        style,
-      ]}
+      style={buttonStyle}
       onPress={onPress}
-      disabled={disabled || isLoading}
+      disabled={disabled || loading}
+      testID={testID}
     >
-      {isLoading ? (
-        <ActivityIndicator color="#fff" />
+      {loading ? (
+        <ActivityIndicator 
+          color={variant === 'outline' ? '#007AFF' : '#fff'} 
+        />
       ) : (
-        <Text style={styles.text}>{title}</Text>
+        <Text style={textStyle}>{title}</Text>
       )}
     </TouchableOpacity>
   );
@@ -41,11 +52,13 @@ export function Button({
 
 const styles = StyleSheet.create({
   button: {
-    height: 50,
+    padding: 12,
     borderRadius: 8,
-    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    justifyContent: 'center',
+  },
+  danger: {
+    backgroundColor: '#FF3B30',
   },
   primary: {
     backgroundColor: '#007AFF',
@@ -53,15 +66,24 @@ const styles = StyleSheet.create({
   secondary: {
     backgroundColor: '#5856D6',
   },
-  danger: {
-    backgroundColor: '#FF3B30',
+  outline: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#007AFF',
   },
   disabled: {
-    opacity: 0.5,
+    backgroundColor: '#ccc',
+    borderColor: '#ccc',
   },
   text: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  outlineText: {
+    color: '#007AFF',
+  },
+  disabledText: {
+    color: '#666',
   },
 }); 

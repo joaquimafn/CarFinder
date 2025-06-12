@@ -5,8 +5,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
 import { SignIn } from './src/screens/SignIn';
 import { Home } from './src/screens/Home';
+import { Model } from './src/screens/Model';
 
-const Stack = createStackNavigator();
+type RootStackParamList = {
+  SignIn: undefined;
+  Home: undefined;
+  Model: {
+    brandCode: number;
+    brandName: string;
+  };
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 function Navigation() {
   const { user, loading } = useAuth();
@@ -24,14 +34,24 @@ function Navigation() {
           options={{ headerShown: false }}
         />
       ) : (
-        <Stack.Screen 
-          name="Home" 
-          component={Home}
-          options={{ 
-            title: 'Home',
-            headerShown: true,
-          }}
-        />
+        <>
+          <Stack.Screen 
+            name="Home" 
+            component={Home}
+            options={{ 
+              title: 'Home',
+              headerShown: true,
+            }}
+          />
+          <Stack.Screen 
+            name="Model" 
+            component={Model}
+            options={({ route }) => ({ 
+              title: `Modelos ${route.params?.brandName || ''}`,
+              headerShown: true,
+            })}
+          />
+        </>
       )}
     </Stack.Navigator>
   );
